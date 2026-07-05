@@ -35,14 +35,14 @@
         /* Cabeçalho */
         header {
             text-align: center;
-            padding: 15px;
+            padding: 20px 15px;
             background: linear-gradient(180deg, #131c31 0%, var(--bg-principal) 100%);
             border-bottom: 1px solid #1e293b;
         }
 
         header h1 {
-            font-size: 2rem;
-            letter-spacing: 2px;
+            font-size: 2.5rem;
+            letter-spacing: 3px;
             font-weight: 800;
         }
 
@@ -51,23 +51,26 @@
         }
 
         header h2 {
-            font-size: 0.95rem;
+            font-size: 1.1rem;
             color: var(--cor-subtexto);
             margin-top: 5px;
             font-style: italic;
             font-weight: 400;
         }
 
-        /* CORREÇÃO: Layout estritamente vertical para os blocos */
+        /* CONFIGURAÇÃO LADO A LADO (HORIZONTAL) */
         .workspace {
             display: flex;
-            flex-direction: column; 
-            padding: 15px;
-            gap: 20px;
+            flex-direction: row; 
+            padding: 25px;
+            gap: 25px;
             width: 100%;
+            max-width: 1600px;
+            margin: 0 auto;
+            flex: 1;
         }
 
-        /* Painéis de Input e Output */
+        /* Painéis de Input e Output com proporção equilibrada */
         .editor-container, .output-container {
             display: flex;
             flex-direction: column;
@@ -75,78 +78,95 @@
             border-radius: 12px;
             border: 1px solid #334155;
             overflow: hidden;
-            width: 100%;
+            flex: 1;
+            min-width: 0; /* Evita quebra de layout com flexbox */
         }
 
         .painel-header {
             background-color: #334155;
-            padding: 12px 15px;
+            padding: 14px 20px;
             font-weight: bold;
-            font-size: 1rem;
+            font-size: 1.1rem;
             display: flex;
             justify-content: space-between;
             align-items: center;
+            border-bottom: 1px solid #475569;
         }
 
-        /* Input de Código com tamanho ideal */
+        /* Textarea Espaçoso para o Input */
         textarea {
             width: 100%;
-            height: 320px; /* Altura ideal para digitar e não sumir com o output no celular */
+            flex: 1;
+            min-height: 500px; 
             background-color: var(--bg-code);
             color: #e2e8f0;
-            padding: 15px;
+            padding: 20px;
             border: none;
-            resize: vertical;
+            resize: none;
             font-family: 'Consolas', 'Courier New', monospace;
-            font-size: 1rem;
-            line-height: 1.4;
+            font-size: 1.05rem;
+            line-height: 1.5;
             outline: none;
         }
 
         .btn-executar {
-            padding: 8px 22px;
+            padding: 10px 28px;
             background-color: var(--cor-accent);
             color: var(--bg-principal);
             border: none;
             border-radius: 6px;
             font-weight: bold;
-            font-size: 0.95rem;
+            font-size: 1rem;
             cursor: pointer;
-            transition: background-color 0.2s ease;
+            transition: all 0.2s ease;
+            box-shadow: 0 4px 6px rgba(56, 189, 248, 0.2);
         }
 
         .btn-executar:hover {
             background-color: var(--cor-accent-hover);
+            transform: translateY(-1px);
         }
 
-        /* Área do Canvas sem paddings exagerados nas laterais */
+        /* Área do Visor Gráfico */
         .canvas-wrapper {
             width: 100%;
+            flex: 1;
             background-color: #1a2235;
-            padding: 8px; 
+            padding: 20px; 
             display: flex;
+            align-items: center;
             justify-content: center;
         }
 
-        /* CORREÇÃO: Canvas horizontal cobrindo quase todo o container na largura */
         canvas {
             background-color: #ffffff;
-            border-radius: 6px;
-            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.4);
-            width: 100%; /* Força preencher a largura inteira do bloco */
+            border-radius: 8px;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.5);
+            width: 100%;
             height: auto;
-            aspect-ratio: 1.8 / 1; /* Proporção horizontal ideal (paisagem) */
+            aspect-ratio: 1.4 / 1; /* Proporção ideal para o visor do transpilador */
             display: block;
         }
 
-        /* Rodapé com seu Copyright */
+        /* Rodapé com Copyright do Yudhi Gerson */
         footer {
             text-align: center;
-            padding: 15px;
+            padding: 20px;
             color: var(--cor-subtexto);
-            font-size: 0.85rem;
+            font-size: 0.9rem;
             border-top: 1px solid #1e293b;
             margin-top: auto;
+        }
+
+        /* Responsividade para telas menores e celulares */
+        @media (max-width: 950px) {
+            .workspace {
+                flex-direction: column;
+                padding: 15px;
+            }
+            textarea {
+                min-height: 350px;
+            }
         }
     </style>
 </head>
@@ -160,7 +180,7 @@
     <div class="workspace">
         <div class="editor-container">
             <div class="painel-header">
-                <span>Input (Código)</span>
+                <span>Input (Código Fonte)</span>
                 <button class="btn-executar" onclick="executarCodigo()">Executar</button>
             </div>
             <textarea id="codigoFonte" spellcheck="false">
@@ -168,38 +188,39 @@
 
 text = "2&3Dix Engine":
   size = 28px
-  position = 0px 70px
+  position = 0px 100px
   color = #38bdf8
 
+>> Testando o tamanho assimétrico corrigido (largura x altura)!
 circle:
-  size = 60px
-  position = -120px 0px
+  size = 90px 45px
+  position = -130px 0px
   color = #eab308
 
 square:
-  size = 50px
+  size = 50px 70px
   position = -40px 0px
   color = red
 
 triangle:
-  size = 50px
+  size = 60px
   position = 40px 0px
   color = blue
 
 star:
-  size = 50px
-  position = 120px 0px
+  size = 55px
+  position = 130px 0px
   color = purple
 
 line:
-  position = -160px -40px, 160px -40px
+  position = -180px -50px, 180px -50px
   thickness = standard
   color = #334155
 </textarea>
         </div>
 
         <div class="output-container">
-            <div class="painel-header">Output (Visor Horizontal)</div>
+            <div class="painel-header">Output (Visor Gráfico)</div>
             <div class="canvas-wrapper">
                 <canvas id="tela"></canvas>
             </div>
@@ -214,9 +235,9 @@ line:
         const canvas = document.getElementById('tela');
         const ctx = canvas.getContext('2d');
 
-        // IMPORTANTE: Só executa quando clica no botão, a página inicia com o canvas limpo.
+        // O canvas inicia completamente limpo e pronto. Só roda quando clicado.
         function executarCodigo() {
-            // Sincroniza a resolução interna de desenho com o tamanho real renderizado na tela
+            // Sincroniza perfeitamente a resolução do motor interno com o tamanho do elemento CSS
             canvas.width = canvas.getBoundingClientRect().width;
             canvas.height = canvas.getBoundingClientRect().height;
 
@@ -228,10 +249,11 @@ line:
             let objetos = [];
             let objetoAtual = null;
 
-            // 1. PROCESSADOR SINTÁTICO (PARSER)
+            // 1. LEITOR ANALISADOR (PARSER)
             for (let i = 0; i < linhas.length; i++) {
                 let linha = linhas[i].trim();
 
+                // Ignora linhas vazias ou comentários nativos '>>'
                 if (!linha || linha.startsWith('>>')) continue;
 
                 if (linha.endsWith(':')) {
@@ -256,14 +278,14 @@ line:
                     objetos.push(objetoAtual);
                 } 
                 else if (linha.includes('=') && objetoAtual) {
-                    let indiceIgual = linha.indexOf('=');
+                    let indiceIgual = Math.min(linha.indexOf('='), linha.length);
                     let chave = linha.slice(0, indiceIgual).trim();
                     let valor = linha.slice(indiceIgual + 1).trim();
                     objetoAtual.propriedades[chave] = valor;
                 }
             }
 
-            // 2. TRATAMENTO DE CAMADAS (Z-INDEX)
+            // 2. ORDENAÇÃO DE CAMADAS (Z-INDEX)
             objetos = objetos.map(obj => {
                 let z = 0;
                 let propZ = obj.propriedades['zindex'];
@@ -275,17 +297,17 @@ line:
             });
             objetos.sort((a, b) => a.z - b.z);
 
-            // 3. LIMPEZA E RENDERIZAÇÃO GRÁFICA
+            // 3. LIMPEZA TOTAL DO VISOR E DESENHO
             ctx.clearRect(0, 0, canvas.width, canvas.height);
             objetos.forEach(obj => renderizarObjeto(obj, centroX, centroY));
         }
 
-        // Funções de tratamento de dados da linguagem
+        // Analisadores de Atributos do 2&3Dix
         function parseSize(valor) {
             if (!valor || valor === 'standard') return [50, 50];
             let nums = valor.replace(/px/g, '').trim().split(/\s+/).map(Number);
-            if (nums.length === 1) return [nums[0], nums[0]];
-            return [nums[0] || 50, nums[1] || 50];
+            if (nums.length === 1) return [nums[0], nums[0]]; // Se passar só um valor, largura = altura
+            return [nums[0] || 50, nums[1] || 50]; // Se passar dois, aplica largura e altura respectivamente
         }
 
         function parsePosition(valor, isLine = false) {
@@ -319,11 +341,11 @@ line:
         function calcCoords(x, y, cX, cY) {
             return {
                 cx: cX + x,
-                cy: cY - y // Plano cartesiano: Y positivo vai para cima
+                cy: cY - y // Respeita a regra matemática: Y positivo sobe
             };
         }
 
-        // Motores de desenho do Canvas
+        // MOTOR RENDERIZADOR GRÁFICO (Canvas 2D)
         function renderizarObjeto(obj, cX, cY) {
             const props = obj.propriedades;
             const color = parseColor(props.color);
@@ -341,7 +363,8 @@ line:
                 let [x, y] = parsePosition(props.position);
                 let pos = calcCoords(x, y, cX, cY);
                 ctx.beginPath();
-                ctx.arc(pos.cx, pos.cy, w/2, 0, Math.PI * 2);
+                // CORREÇÃO: Usa ctx.ellipse para aceitar larguras e alturas diferentes perfeitamente
+                ctx.ellipse(pos.cx, pos.cy, w/2, h/2, 0, 0, Math.PI * 2);
                 ctx.fill();
             }
             else if (obj.tipo === 'triangle') {
@@ -359,13 +382,19 @@ line:
                 let [w, h] = parseSize(props.size);
                 let [x, y] = parsePosition(props.position);
                 let pos = calcCoords(x, y, cX, cY);
-                let raioMaior = w/2;
-                let raioMenor = w/4;
+                
+                // CORREÇÃO: Raios X e Y separados para que o tamanho dinâmico duplo funcione na estrela
+                let rxMaior = w/2;
+                let ryMaior = h/2;
+                let rxMenor = w/4;
+                let ryMenor = h/4;
+                
                 ctx.beginPath();
                 for(let i = 0; i < 10; i++) {
-                    let raio = i % 2 === 0 ? raioMaior : raioMenor;
+                    let rx = i % 2 === 0 ? rxMaior : rxMenor;
+                    let ry = i % 2 === 0 ? ryMaior : ryMenor;
                     let angulo = (Math.PI/2) - (i * Math.PI/5);
-                    ctx.lineTo(pos.cx + Math.cos(angulo) * raio, pos.cy - Math.sin(angulo) * raio);
+                    ctx.lineTo(pos.cx + Math.cos(angulo) * rx, pos.cy - Math.sin(angulo) * ry);
                 }
                 ctx.closePath();
                 ctx.fill();
@@ -386,15 +415,15 @@ line:
                 let [x, y] = parsePosition(props.position);
                 let pos = calcCoords(x, y, cX, cY);
                 
-                ctx.font = `bold ${w}px 'Segoe UI', sans-serif`;
+                ctx.font = `bold ${h}px 'Segoe UI', sans-serif`;
                 ctx.textAlign = 'center';
                 ctx.textBaseline = 'middle';
                 
                 if (props.thickness) {
                     ctx.lineWidth = parseThickness(props.thickness);
-                    ctx.strokeText(obj.texto, pos.cx, pos.cy);
+                    ctx.strokeText(obj.texto, pos.cx, pos.cy, props.size && w !== h ? w : undefined);
                 }
-                ctx.fillText(obj.texto, pos.cx, pos.cy);
+                ctx.fillText(obj.texto, pos.cx, pos.cy, props.size && w !== h ? w : undefined);
             }
         }
     </script>

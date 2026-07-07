@@ -3,447 +3,599 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>2&3Dix - Transpilador</title>
+    <title>2&3Dix v1.1 2D Transpiler</title>
     <style>
+        /* CONFIGURAÇÃO DE TEMAS (Variáveis CSS) */
         :root {
-            --bg-principal: #0f172a;
-            --bg-card: #1e293b;
-            --bg-code: #0b0f19;
-            --cor-texto: #f8fafc;
-            --cor-subtexto: #94a3b8;
-            --cor-accent: #38bdf8;
-            --cor-accent-hover: #0ea5e9;
+            --bg-principal: #f5f6fa;
+            --bg-container: #ffffff;
+            --texto-principal: #2f3640;
+            --texto-secundario: #7f8c8d;
+            --bordas: #dcdde1;
+            --bg-editor: #ffffff;
+            --texto-editor: #2f3640;
+            --bg-canvas: #ffffff;
+            --borda-canvas: #2f3640;
+            --linha-guia: #e1b12c;
         }
 
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        [data-theme="dark"] {
+            --bg-principal: #1e1e24;
+            --bg-container: #2a2a35;
+            --texto-principal: #f5f6fa;
+            --texto-secundario: #a4b0be;
+            --bordas: #485460;
+            --bg-editor: #1e1e24;
+            --texto-editor: #ffffff;
+            --bg-canvas: #1e1e24;
+            --borda-canvas: #718093;
+            --linha-guia: #44bd32;
         }
 
+        /* LAYOUT TOTALMENTE VERTICAL REQUISITADO */
         body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
             background-color: var(--bg-principal);
-            color: var(--cor-texto);
+            color: var(--texto-principal);
+            margin: 0;
+            padding: 30px 20px;
             display: flex;
             flex-direction: column;
-            min-height: 100vh;
-            width: 100vw;
-            overflow-x: hidden;
+            align-items: center;
+            gap: 25px;
+            transition: background-color 0.3s, color 0.3s;
         }
 
-        /* Cabeçalho */
         header {
             text-align: center;
-            padding: 20px 15px;
-            background: linear-gradient(180deg, #131c31 0%, var(--bg-principal) 100%);
-            border-bottom: 1px solid #1e293b;
-        }
-
-        header h1 {
-            font-size: 2.5rem;
-            letter-spacing: 3px;
-            font-weight: 800;
-        }
-
-        header h1 span {
-            color: var(--cor-accent);
-        }
-
-        header h2 {
-            font-size: 1.1rem;
-            color: var(--cor-subtexto);
-            margin-top: 5px;
-            font-style: italic;
-            font-weight: 400;
-        }
-
-        /* CONFIGURAÇÃO LADO A LADO (HORIZONTAL) */
-        .workspace {
-            display: flex;
-            flex-direction: row; 
-            padding: 25px;
-            gap: 25px;
             width: 100%;
-            max-width: 1600px;
-            margin: 0 auto;
-            flex: 1;
+            max-width: 650px;
         }
 
-        /* Painéis de Input e Output com proporção equilibrada */
-        .editor-container, .output-container {
+        h1 {
+            margin: 0;
+            color: #1a73e8;
+            font-size: 2.8rem;
+            letter-spacing: 1px;
+        }
+
+        .subtitle {
+            font-style: italic;
+            color: var(--texto-secundario);
+            margin-top: 6px;
+            font-size: 1.1rem;
+        }
+
+        .theme-toggle {
+            margin-top: 15px;
+            padding: 10px 20px;
+            background-color: var(--bg-container);
+            color: var(--texto-principal);
+            border: 2px solid var(--bordas);
+            border-radius: 25px;
+            cursor: pointer;
+            font-weight: bold;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+            transition: all 0.2s ease;
+        }
+        .theme-toggle:hover {
+            transform: scale(1.02);
+            border-color: #1a73e8;
+        }
+
+        .component-container {
+            width: 100%;
+            max-width: 650px;
             display: flex;
             flex-direction: column;
-            background-color: var(--bg-card);
-            border-radius: 12px;
-            border: 1px solid #334155;
-            overflow: hidden;
-            flex: 1;
-            min-width: 0; /* Evita quebra de layout com flexbox */
+            gap: 20px;
         }
 
-        .painel-header {
-            background-color: #334155;
-            padding: 14px 20px;
-            font-weight: bold;
-            font-size: 1.1rem;
+        .block {
             display: flex;
-            justify-content: space-between;
-            align-items: center;
-            border-bottom: 1px solid #475569;
+            flex-direction: column;
+            gap: 8px;
         }
 
-        /* Textarea Espaçoso para o Input */
-        textarea {
-            width: 100%;
-            flex: 1;
-            min-height: 500px; 
-            background-color: var(--bg-code);
-            color: #e2e8f0;
-            padding: 20px;
-            border: none;
-            resize: none;
-            font-family: 'Consolas', 'Courier New', monospace;
-            font-size: 1.05rem;
-            line-height: 1.5;
-            outline: none;
-        }
-
-        .btn-executar {
-            padding: 10px 28px;
-            background-color: var(--cor-accent);
-            color: var(--bg-principal);
-            border: none;
-            border-radius: 6px;
+        label {
             font-weight: bold;
             font-size: 1rem;
-            cursor: pointer;
-            transition: all 0.2s ease;
-            box-shadow: 0 4px 6px rgba(56, 189, 248, 0.2);
+            color: var(--texto-principal);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
         }
 
-        .btn-executar:hover {
-            background-color: var(--cor-accent-hover);
+        /* INPUT */
+        textarea {
+            width: 100%;
+            height: 250px;
+            font-family: 'Consolas', 'Courier New', monospace;
+            font-size: 14px;
+            padding: 15px;
+            border: 2px solid var(--bordas);
+            border-radius: 8px;
+            box-sizing: border-box;
+            background-color: var(--bg-editor);
+            color: var(--texto-editor);
+            resize: vertical;
+            line-height: 1.5;
+            transition: all 0.3s;
+        }
+        textarea:focus {
+            outline: none;
+            border-color: #1a73e8;
+        }
+
+        .btn-compile {
+            width: 100%;
+            padding: 14px;
+            background-color: #1a73e8;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: bold;
+            cursor: pointer;
+            box-shadow: 0 4px 6px rgba(26, 115, 232, 0.2);
+            transition: all 0.2s;
+        }
+        .btn-compile:hover {
+            background-color: #1557b0;
             transform: translateY(-1px);
         }
 
-        /* Área do Visor Gráfico */
-        .canvas-wrapper {
-            width: 100%;
-            flex: 1;
-            background-color: #1a2235;
-            padding: 20px; 
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
-
+        /* DESENHO (CANVAS) */
         canvas {
-            background-color: #ffffff;
+            border: 2px solid var(--borda-canvas);
+            background-color: var(--bg-canvas);
             border-radius: 8px;
-            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.5);
+            box-shadow: 0 6px 12px rgba(0,0,0,0.05);
+            align-self: center;
+            width: 450px;
+            height: 450px;
+            transition: background-color 0.3s, border-color 0.3s;
+        }
+
+        /* OUTPUT (CONSOLE) */
+        .console {
             width: 100%;
-            height: auto;
-            aspect-ratio: 1.4 / 1; /* Proporção ideal para o visor do transpilador */
-            display: block;
+            height: 140px;
+            background-color: #1e1e24;
+            color: #2ecc71;
+            font-family: 'Consolas', 'Courier New', monospace;
+            padding: 15px;
+            border-radius: 8px;
+            box-sizing: border-box;
+            overflow-y: auto;
+            white-space: pre-wrap;
+            border: 2px solid #2f3542;
+            box-shadow: inset 0 2px 4px rgba(0,0,0,0.2);
         }
-
-        /* Rodapé com Copyright do Yudhi Gerson */
-        footer {
-            text-align: center;
-            padding: 20px;
-            color: var(--cor-subtexto);
-            font-size: 0.9rem;
-            border-top: 1px solid #1e293b;
-            margin-top: auto;
-        }
-
-        /* Responsividade para telas menores e celulares */
-        @media (max-width: 950px) {
-            .workspace {
-                flex-direction: column;
-                padding: 15px;
-            }
-            textarea {
-                min-height: 350px;
-            }
-        }
-
-        .botoes {
-            display: inline-block;
-            padding: 10px 20px;
-            background-color: #38bdf8;
-            color: white;
-            text-decoration: none;
-            border-radius: 5px;
-            font-weight: bold;
-        }
-
-         .botoes:hover {
-             background-color: #0284c7;
-         }
-
-
     </style>
 </head>
 <body>
 
     <header>
-        <h1>2<span>&</span>3Dix</h1>
-        <h2>Se não souber desenhar algo, programe ele.</h2>
+        <h1>2&3Dix v1.1 2D</h1>
+        <div class="subtitle">"Se não souber desenhar, programe-o"</div>
+        <button class="theme-toggle" onclick="toggleTheme()" id="themeBtn">Alternar para Modo Escuro 🌙</button>
     </header>
 
-    <div class="workspace">
-        <div class="editor-container">
-            <div class="painel-header">
-                <span>Input (Código Fonte)</span>
-                <button class="btn-executar" onclick="executarCodigo()">Executar</button>
-            </div>
-            <textarea id="codigoFonte" spellcheck="false">
->> Digite seu código 2&3Dix aqui e aperte Executar!
+    <div class="component-container">
+        <div class="block">
+            <label for="codeInput">Input (Escreva o código aqui):</label>
+            <textarea id="codeInput" placeholder="Escreva o código 2&3Dix aqui...">varSelector:
+  nome = "Yudhi"
+  altura = 30px
+  raio = 25px
+  diametro = raio * 2
+  pixel = 10
+  pixel = pixel + 1
 
-text = "2&3Dix Engine":
-  size = 28px
-  position = 0px 100px
-  color = #38bdf8
-
->> Testando o tamanho assimétrico corrigido (largura x altura)!
-circle:
-  size = 90px 45px
-  position = -130px 0px
-  color = #eab308
-
-square:
-  size = 50px 70px
-  position = -40px 0px
+>> Herança Clássica (Classe declarada antes do objeto)
+objetos:
   color = red
+  size = 40px
 
-triangle:
-  size = 60px
-  position = 40px 0px
-  color = blue
+circle (class = "objetos"):
+  position = -80px 80px   >> Y positivo sobe!
 
-star:
-  size = 55px
-  position = 130px 0px
+square (class = "objetos")
+  color = blue            >> Filho Independente mudando cor
+  position = 80px 80px
+
+>> Exemplo exato do varSelector da Documentação
+text = nome:
+  position = 0px altura
+  thickness = 20px
+  color = #1a73e8
+
+>> Objeto com ID customizado
+circle (id = "cabeca"):
+  color = #FFC080
+  size = diametro
+  position = 0px -40px
+
+>> Polígono Dinâmico (10 lados)
+10-gon:
   color = purple
+  size = 60px
+  position = -100px -120px
 
+>> Linha com coordenadas compostas
 line:
-  position = -180px -50px, 180px -50px
+  position = -50px -150px, 50px -150px
+  color = green
   thickness = standard
-  color = #334155
-</textarea>
+
+print -> "Estou no console, e concluí a v1.1 de 2&3dix!"</textarea>
         </div>
 
-        <div class="output-container">
-            <div class="painel-header">Output (Visor Gráfico)</div>
-            <div class="canvas-wrapper">
-                <canvas id="tela"></canvas>
-            </div>
+        <button class="btn-compile" onclick="execute23Dix()">Compilar e Desenhar</button>
+
+        <div class="block">
+            <label>Desenho (Ambiente Gráfico):</label>
+            <canvas id="canvasDisplay"></canvas>
         </div>
-        <a href="transpilador3d.html" class="botoes">Crie em 3d</a>
+
+        <div class="block">
+            <label for="consoleOutput">Output (Console de Texto):</label>
+            <div id="consoleOutput" class="console"></div>
+        </div>
     </div>
 
-    <footer>
-        <p>&copy; 2026 2&3Dix. Criado por Yudhi Gerson. Todos os direitos reservados.</p>
-    </footer>
+<script>
+    // --- FUNÇÃO DO MODO CLARO/ESCURO ---
+    function toggleTheme() {
+        const body = document.body;
+        const btn = document.getElementById('themeBtn');
+        
+        if (body.getAttribute('data-theme') === 'dark') {
+            body.removeAttribute('data-theme');
+            btn.textContent = "Alternar para Modo Escuro 🌙";
+        } else {
+            body.setAttribute('data-theme', 'dark');
+            btn.textContent = "Alternar para Modo Claro ☀️";
+        }
+        execute23Dix();
+    }
 
-    <script>
-        const canvas = document.getElementById('tela');
+    // --- TRANSIPILADOR E MOTOR GRÁFICO 2&3Dix ---
+    function execute23Dix() {
+        const code = document.getElementById('codeInput').value;
+        const canvas = document.getElementById('canvasDisplay');
         const ctx = canvas.getContext('2d');
+        const consoleOut = document.getElementById('consoleOutput');
+        
+        // Configuração High-DPI para Círculos Perfeitamente Lisos
+        const dpr = window.devicePixelRatio || 1;
+        const logicalSize = 450; 
+        
+        canvas.width = logicalSize * dpr;
+        canvas.height = logicalSize * dpr;
+        canvas.style.width = logicalSize + 'px';
+        canvas.style.height = logicalSize + 'px';
+        ctx.scale(dpr, dpr);
 
-        // O canvas inicia completamente limpo e pronto. Só roda quando clicado.
-        function executarCodigo() {
-            // Sincroniza perfeitamente a resolução do motor interno com o tamanho do elemento CSS
-            canvas.width = canvas.getBoundingClientRect().width;
-            canvas.height = canvas.getBoundingClientRect().height;
+        const isDarkMode = document.body.getAttribute('data-theme') === 'dark';
+        const defaultShapeColor = isDarkMode ? '#ffffff' : '#000000';
+        const gridColor = getComputedStyle(document.body).getPropertyValue('--linha-guia').trim();
 
-            const centroX = canvas.width / 2;
-            const centroY = canvas.height / 2;
+        // Limpar Console e Canvas
+        ctx.clearRect(0, 0, logicalSize, logicalSize);
+        consoleOut.textContent = "";
+        
+        // Desenhar eixos cartesianos de referência (0,0 no centro)
+        ctx.strokeStyle = gridColor;
+        ctx.lineWidth = 1;
+        ctx.beginPath();
+        ctx.moveTo(0, logicalSize / 2); ctx.lineTo(logicalSize, logicalSize / 2);
+        ctx.moveTo(logicalSize / 2, 0); ctx.lineTo(logicalSize / 2, logicalSize);
+        ctx.stroke();
 
-            const codigo = document.getElementById('codigoFonte').value;
-            const linhas = codigo.split('\n');
-            let objetos = [];
-            let objetoAtual = null;
+        let variables = {};
+        let objects = [];
+        let classes = {};
+        
+        const lines = code.split('\n');
+        let currentScope = null; 
+        let currentTarget = null;
 
-            // 1. LEITOR ANALISADOR (PARSER)
-            for (let i = 0; i < linhas.length; i++) {
-                let linha = linhas[i].trim();
+        // --- ETAPA 1: LEITURA E ANÁLISE SINTÁTICA (PARSER) ---
+        for (let line of lines) {
+            if (line.includes('>>')) {
+                line = line.split('>>')[0]; // Remove comentários da linha
+            }
+            
+            let trimmed = line.trim();
+            if (!trimmed) continue;
 
-                // Ignora linhas vazias ou comentários nativos '>>'
-                if (!linha || linha.startsWith('>>')) continue;
+            // VarSelector escopo
+            if (trimmed === 'varSelector:') {
+                currentScope = 'vars';
+                continue;
+            }
 
-                if (linha.endsWith(':')) {
-                    let linhaSemDoisPontos = linha.slice(0, -1).trim();
-                    let tipoObjeto = linhaSemDoisPontos;
-                    let textoConteudo = "";
+            // Captura de Prints direcionados ao Console
+            let printMatch = trimmed.match(/^print\s*->\s*(.+)$/);
+            if (printMatch) {
+                let rawText = printMatch[1].trim();
+                consoleOut.textContent += resolveValue(rawText, variables) + "\n";
+                continue;
+            }
 
-                    if (linhaSemDoisPontos.startsWith('text')) {
-                        const regexTexto = /text\s*=\s*["'](.*?)["']/;
-                        const match = linhaSemDoisPontos.match(regexTexto);
-                        if (match) {
-                            textoConteudo = match[1];
-                            tipoObjeto = 'text';
-                        }
-                    }
+            // Identificação de Formas e Objetos Gráficos
+            let firstWord = trimmed.split(/[=(:]/)[0].trim();
+            let isShape = ['circle', 'square', 'triangle', 'star', 'line', 'text'].includes(firstWord) || /^\d+-gon$/.test(firstWord);
 
-                    objetoAtual = { 
-                        tipo: tipoObjeto, 
-                        texto: textoConteudo, 
-                        propriedades: {} 
-                    };
-                    objetos.push(objetoAtual);
-                } 
-                else if (linha.includes('=') && objetoAtual) {
-                    let indiceIgual = Math.min(linha.indexOf('='), linha.length);
-                    let chave = linha.slice(0, indiceIgual).trim();
-                    let valor = linha.slice(indiceIgual + 1).trim();
-                    objetoAtual.propriedades[chave] = valor;
+            if (isShape) {
+                let type = firstWord;
+                let inlineValue = "";
+                
+                let preParen = trimmed.split('(')[0];
+                if (preParen.includes('=')) {
+                    inlineValue = preParen.split('=')[1].replace(':', '').trim();
+                }
+
+                let attrStr = "";
+                let attrMatch = trimmed.match(/\(([^)]+)\)/);
+                if (attrMatch) attrStr = attrMatch[1];
+
+                let attrs = parseAttributes(attrStr);
+                let newObj = {
+                    type: type,
+                    value: inlineValue,
+                    id: attrs.id,
+                    className: attrs.className,
+                    props: {}
+                };
+                objects.push(newObj);
+                currentScope = 'shape';
+                currentTarget = newObj;
+                continue;
+            }
+
+            // Identificação de Classes Isoladas (Herança / Lazy Definition)
+            if (!isShape && trimmed.endsWith(':') && !trimmed.includes('=')) {
+                let className = trimmed.slice(0, -1).trim();
+                currentScope = 'class';
+                classes[className] = classes[className] || {};
+                currentTarget = className;
+                continue;
+            }
+
+            // Mapeamento Interno de Atribuições (Chave = Valor)
+            if (trimmed.includes('=')) {
+                let parts = trimmed.split('=');
+                let propName = parts[0].trim();
+                let propVal = parts.slice(1).join('=').trim();
+
+                if (currentScope === 'vars') {
+                    variables[propName] = evalMathExpression(propVal, variables);
+                } else if (currentScope === 'shape' && currentTarget) {
+                    currentTarget.props[propName] = propVal;
+                } else if (currentScope === 'class' && currentTarget) {
+                    classes[currentTarget][propName] = propVal;
                 }
             }
-
-            // 2. ORDENAÇÃO DE CAMADAS (Z-INDEX)
-            objetos = objetos.map(obj => {
-                let z = 0;
-                let propZ = obj.propriedades['zindex'];
-                if (propZ && propZ !== 'standard') {
-                    z = parseInt(propZ) || 0;
-                }
-                obj.z = z;
-                return obj;
-            });
-            objetos.sort((a, b) => a.z - b.z);
-
-            // 3. LIMPEZA TOTAL DO VISOR E DESENHO
-            ctx.clearRect(0, 0, canvas.width, canvas.height);
-            objetos.forEach(obj => renderizarObjeto(obj, centroX, centroY));
         }
 
-        // Analisadores de Atributos do 2&3Dix
-        function parseSize(valor) {
-            if (!valor || valor === 'standard') return [50, 50];
-            let nums = valor.replace(/px/g, '').trim().split(/\s+/).map(Number);
-            if (nums.length === 1) return [nums[0], nums[0]]; // Se passar só um valor, largura = altura
-            return [nums[0] || 50, nums[1] || 50]; // Se passar dois, aplica largura e altura respectivamente
-        }
-
-        function parsePosition(valor, isLine = false) {
-            if (!valor || valor === 'center') {
-                return isLine ? [[0,0], [0,0]] : [0, 0];
-            }
-            if (isLine) {
-                let pontos = valor.split(',');
-                let p1 = pontos[0] ? pontos[0].replace(/px/g, '').trim().split(/\s+/).map(Number) : [0,0];
-                let p2 = pontos[1] ? pontos[1].replace(/px/g, '').trim().split(/\s+/).map(Number) : [0,0];
-                return [
-                    [p1[0] || 0, p1[1] || 0],
-                    [p2[0] || 0, p2[1] || 0]
-                ];
-            } else {
-                let nums = valor.replace(/px/g, '').trim().split(/\s+/).map(Number);
-                if (nums.length === 1) return [nums[0] || 0, nums[0] || 0];
-                return [nums[0] || 0, nums[1] || 0];
-            }
-        }
-
-        function parseThickness(valor) {
-            if (!valor || valor === 'standard') return 12;
-            return parseInt(valor.replace(/px/g, '').trim()) || 12;
-        }
-
-        function parseColor(valor) {
-            return valor ? valor : '#000000';
-        }
-
-        function calcCoords(x, y, cX, cY) {
-            return {
-                cx: cX + x,
-                cy: cY - y // Respeita a regra matemática: Y positivo sobe
+        // --- ETAPA 2: COMPILAÇÃO DAS PROPRIEDADES (HERANÇA, LAZY DEFINITION & FILHO INDEPENDENTE) ---
+        let processedObjects = objects.map(obj => {
+            let finalProps = {
+                size: 'standard',
+                position: 'center',
+                color: defaultShapeColor,
+                thickness: 'standard',
+                zindex: 'standard'
             };
-        }
 
-        // MOTOR RENDERIZADOR GRÁFICO (Canvas 2D)
-        function renderizarObjeto(obj, cX, cY) {
-            const props = obj.propriedades;
-            const color = parseColor(props.color);
+            // 1. Aplica Herança de Classe (funciona mesmo se declarada depois por causa do Lazy Definition)
+            if (obj.className && classes[obj.className]) {
+                Object.assign(finalProps, classes[obj.className]);
+            }
+
+            // 2. Sobrescreve com as propriedades locais (Filho Independente)
+            Object.assign(finalProps, obj.props);
+
+            return {
+                type: obj.type,
+                value: obj.value,
+                props: finalProps
+            };
+        });
+
+        // Ordenação das Camadas pelo zindex
+        processedObjects.sort((a, b) => {
+            let zA = a.props.zindex === 'standard' ? 0 : parseInt(a.props.zindex) || 0;
+            let zB = b.props.zindex === 'standard' ? 0 : parseInt(b.props.zindex) || 0;
+            return zA - zB;
+        });
+
+        // --- ETAPA 3: RENDERIZAÇÃO GRÁFICA NO CANVAS ---
+        processedObjects.forEach(obj => {
+            let color = resolveValue(obj.props.color, variables);
+            let sizeData = parseSize(obj.props.size, variables);
+            let posData = parsePosition(obj.props.position, variables);
+            
             ctx.fillStyle = color;
             ctx.strokeStyle = color;
 
-            if (obj.tipo === 'square') {
-                let [w, h] = parseSize(props.size);
-                let [x, y] = parsePosition(props.position);
-                let pos = calcCoords(x, y, cX, cY);
-                ctx.fillRect(pos.cx - w/2, pos.cy - h/2, w, h);
+            // MAPEAMENTO CARTESIANO CORRIGIDO: Y POSITIVO ANDA PARA CIMA
+            let cx = logicalSize / 2 + posData.x;
+            let cy = logicalSize / 2 - posData.y; // Subtrair joga o elemento para o topo da tela
+
+            if (obj.type === 'circle') {
+                let radius = sizeData.w / 2;
+                ctx.beginPath();
+                ctx.arc(cx, cy, radius, 0, 2 * Math.PI);
+                ctx.fill();
             } 
-            else if (obj.tipo === 'circle') {
-                let [w, h] = parseSize(props.size);
-                let [x, y] = parsePosition(props.position);
-                let pos = calcCoords(x, y, cX, cY);
+            else if (obj.type === 'square') {
+                ctx.fillRect(cx - sizeData.w / 2, cy - sizeData.h / 2, sizeData.w, sizeData.h);
+            } 
+            else if (obj.type === 'triangle') {
                 ctx.beginPath();
-                // CORREÇÃO: Usa ctx.ellipse para aceitar larguras e alturas diferentes perfeitamente
-                ctx.ellipse(pos.cx, pos.cy, w/2, h/2, 0, 0, Math.PI * 2);
-                ctx.fill();
-            }
-            else if (obj.tipo === 'triangle') {
-                let [w, h] = parseSize(props.size);
-                let [x, y] = parsePosition(props.position);
-                let pos = calcCoords(x, y, cX, cY);
-                ctx.beginPath();
-                ctx.moveTo(pos.cx, pos.cy - h/2);
-                ctx.lineTo(pos.cx - w/2, pos.cy + h/2);
-                ctx.lineTo(pos.cx + w/2, pos.cy + h/2);
+                ctx.moveTo(cx, cy - sizeData.h / 2);
+                ctx.lineTo(cx + sizeData.w / 2, cy + sizeData.h / 2);
+                ctx.lineTo(cx - sizeData.w / 2, cy + sizeData.h / 2);
                 ctx.closePath();
                 ctx.fill();
-            }
-            else if (obj.tipo === 'star') {
-                let [w, h] = parseSize(props.size);
-                let [x, y] = parsePosition(props.position);
-                let pos = calcCoords(x, y, cX, cY);
-                
-                // CORREÇÃO: Raios X e Y separados para que o tamanho dinâmico duplo funcione na estrela
-                let rxMaior = w/2;
-                let ryMaior = h/2;
-                let rxMenor = w/4;
-                let ryMenor = h/4;
-                
+            } 
+            else if (obj.type === 'star') {
+                drawStar(ctx, cx, cy, 5, sizeData.w / 2, sizeData.w / 4);
+            } 
+            else if (obj.type === 'line') {
+                let thick = obj.props.thickness === 'standard' ? 12 : parseFloat(resolveValue(obj.props.thickness, variables)) || 12;
+                ctx.lineWidth = thick;
                 ctx.beginPath();
-                for(let i = 0; i < 10; i++) {
-                    let rx = i % 2 === 0 ? rxMaior : rxMenor;
-                    let ry = i % 2 === 0 ? ryMaior : ryMenor;
-                    let angulo = (Math.PI/2) - (i * Math.PI/5);
-                    ctx.lineTo(pos.cx + Math.cos(angulo) * rx, pos.cy - Math.sin(angulo) * ry);
-                }
-                ctx.closePath();
-                ctx.fill();
-            }
-            else if (obj.tipo === 'line') {
-                let pontos = parsePosition(props.position, true);
-                let pos1 = calcCoords(pontos[0][0], pontos[0][1], cX, cY);
-                let pos2 = calcCoords(pontos[1][0], pontos[1][1], cX, cY);
-                ctx.lineWidth = parseThickness(props.thickness);
-                ctx.lineCap = 'round';
-                ctx.beginPath();
-                ctx.moveTo(pos1.cx, pos1.cy);
-                ctx.lineTo(pos2.cx, pos2.cy);
+                // Aplicação do plano com Y para cima também nos pontos das linhas
+                let x1 = logicalSize / 2 + posData.pt1.x;
+                let y1 = logicalSize / 2 - posData.pt1.y;
+                let x2 = logicalSize / 2 + posData.pt2.x;
+                let y2 = logicalSize / 2 - posData.pt2.y;
+                ctx.moveTo(x1, y1);
+                ctx.lineTo(x2, y2);
                 ctx.stroke();
-            }
-            else if (obj.tipo === 'text') {
-                let [w, h] = parseSize(props.size);
-                let [x, y] = parsePosition(props.position);
-                let pos = calcCoords(x, y, cX, cY);
-                
-                ctx.font = `bold ${h}px 'Segoe UI', sans-serif`;
+            } 
+            else if (obj.type === 'text') {
+                let textString = resolveValue(obj.value, variables);
+                let thicknessValue = obj.props.thickness === 'standard' ? 16 : parseFloat(resolveValue(obj.props.thickness, variables)) || 16;
+                ctx.font = `${thicknessValue}px sans-serif`;
                 ctx.textAlign = 'center';
                 ctx.textBaseline = 'middle';
-                
-                if (props.thickness) {
-                    ctx.lineWidth = parseThickness(props.thickness);
-                    ctx.strokeText(obj.texto, pos.cx, pos.cy, props.size && w !== h ? w : undefined);
+                ctx.fillText(textString, cx, cy);
+            } 
+            else if (obj.type.endsWith('-gon')) {
+                let n = parseInt(obj.type);
+                if (n >= 3) {
+                    drawPolygon(ctx, cx, cy, n, sizeData.w / 2);
                 }
-                ctx.fillText(obj.texto, pos.cx, pos.cy, props.size && w !== h ? w : undefined);
             }
+        });
+    }
+
+    // --- UTILITÁRIOS INTERNOS DO MOTOR ---
+    function resolveValue(valStr, vars) {
+        valStr = valStr.trim();
+        if ((valStr.startsWith('"') && valStr.endsWith('"')) || (valStr.startsWith("'") && valStr.endsWith("'"))) {
+            return valStr.slice(1, -1);
         }
-    </script>
+        let clean = valStr.replace(/px/g, '');
+        if (vars[clean] !== undefined) return vars[clean];
+        return valStr;
+    }
+
+    function evalMathExpression(exprStr, vars) {
+        let clean = exprStr.replace(/px/g, '').trim();
+        if ((clean.startsWith('"') && clean.endsWith('"')) || (clean.startsWith("'") && clean.endsWith("'"))) {
+            return clean.slice(1, -1);
+        }
+        
+        let sortedNames = Object.keys(vars).sort((a, b) => b.length - a.length);
+        for (let name of sortedNames) {
+            let val = vars[name];
+            if (typeof val === 'string') val = val.replace(/px/g, '');
+            let re = new RegExp('\\b' + name + '\\b', 'g');
+            clean = clean.replace(re, val);
+        }
+        try {
+            return Function('"use strict"; return (' + clean + ')')();
+        } catch(e) {
+            return clean;
+        }
+    }
+
+    function parseAttributes(attrStr) {
+        let attrs = { id: undefined, className: undefined };
+        if (!attrStr) return attrs;
+        let idM = attrStr.match(/id\s*=\s*["']([^"']+)["']/);
+        let classM = attrStr.match(/class\s*=\s*["']([^"']+)["']/);
+        if (idM) attrs.id = idM[1];
+        if (classM) attrs.className = classM[1];
+        return attrs;
+    }
+
+    function parseSize(sizeStr, vars) {
+        if (!sizeStr || sizeStr.trim() === 'standard') return { w: 50, h: 50 };
+        let clean = sizeStr.replace(/px/g, '').trim();
+        let parts = clean.split(/\s+/);
+        if (parts.length === 1) {
+            let s = parseFloat(evalMathExpression(parts[0], vars)) || 50;
+            return { w: s, h: s };
+        } else {
+            let w = parseFloat(evalMathExpression(parts[0], vars)) || 50;
+            let h = parseFloat(evalMathExpression(parts[1], vars)) || 50;
+            return { w, h };
+        }
+    }
+
+    // Processamento de posições com inversão cartesiana em mente
+    function parsePosition(posStr, vars) {
+        if (!posStr || posStr.trim() === 'center') return { x: 0, y: 0 };
+        if (posStr.includes(',')) {
+            let pts = posStr.split(',');
+            return {
+                isLine: true,
+                pt1: parseSinglePos(pts[0], vars),
+                pt2: parseSinglePos(pts[1], vars)
+            };
+        }
+        return parseSinglePos(posStr, vars);
+    }
+
+    function parseSinglePos(str, vars) {
+        let clean = str.replace(/px/g, '').trim();
+        let parts = clean.split(/\s+/);
+        let x = parseFloat(evalMathExpression(parts[0] || '0', vars)) || 0;
+        let y = parseFloat(evalMathExpression(parts[1] || '0', vars)) || 0;
+        return { x, y };
+    }
+
+    function drawStar(ctx, cx, cy, spikes, outerRadius, innerRadius) {
+        let rot = Math.PI / 2 * 3;
+        let x = cx, y = cy;
+        let step = Math.PI / spikes;
+        ctx.beginPath();
+        ctx.moveTo(cx, cy - outerRadius);
+        for (let i = 0; i < spikes; i++) {
+            x = cx + Math.cos(rot) * outerRadius;
+            y = cy + Math.sin(rot) * outerRadius;
+            ctx.lineTo(x, y);
+            rot += step;
+            x = cx + Math.cos(rot) * innerRadius;
+            y = cy + Math.sin(rot) * innerRadius;
+            ctx.lineTo(x, y);
+            rot += step;
+        }
+        ctx.lineTo(cx, cy - outerRadius);
+        ctx.closePath();
+        ctx.fill();
+    }
+
+    function drawPolygon(ctx, cx, cy, sides, radius) {
+        ctx.beginPath();
+        for (let i = 0; i < sides; i++) {
+            let angle = (i * 2 * Math.PI / sides) - Math.PI / 2;
+            let x = cx + Math.cos(angle) * radius;
+            let y = cy + Math.sin(angle) * radius;
+            if (i === 0) ctx.moveTo(x, y);
+            else ctx.lineTo(x, y);
+        }
+        ctx.closePath();
+        ctx.fill();
+    }
+
+    // --- GARANTIA ABSOLUTA CONTRA ERROS DE ESCOPO/EXECUÇÃO ---
+    // Mapeia as funções nativas e em caixa alta diretamente no objeto window global do navegador
+    window.execute23Dix = execute23Dix;
+    window.toggleTheme = toggleTheme;
+    window.EXECUTAR23DIX = execute23Dix;
+    window.TOGGLETHEME = toggleTheme;
+
+    // Inicialização direta automática
+    window.onload = execute23Dix;
+</script>
 </body>
 </html>
 

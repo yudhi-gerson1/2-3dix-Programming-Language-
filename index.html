@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Documentação 2&3Dix</title>
+    <title>Manual de Referência 2&3Dix</title>
     <style>
         :root {
             --bg: #f4f4f9;
@@ -12,8 +12,8 @@
             --accent: #2c3e50;
             --code-bg: #e8e8e8;
             --border: #ddd;
+            --btn-copy: #7f8c8d;
         }
-
         [data-theme="dark"] {
             --bg: #1a1a2e;
             --text: #e0e0e0;
@@ -21,25 +21,39 @@
             --accent: #4ecca3;
             --code-bg: #0f3460;
             --border: #444;
+            --btn-copy: #a29bfe;
         }
-
-        body { font-family: 'Segoe UI', sans-serif; background: var(--bg); color: var(--text); padding: 20px; transition: 0.3s; }
-        .container { max-width: 800px; margin: auto; }
+        body { font-family: 'Segoe UI', Tahoma, sans-serif; background: var(--bg); color: var(--text); padding: 20px; transition: 0.3s; }
+        .container { max-width: 900px; margin: auto; }
         header { text-align: center; margin-bottom: 40px; }
-        h1 { font-size: 3rem; color: var(--accent); }
-        .slogan { font-style: italic; opacity: 0.8; }
+        h1 { font-size: 3.5rem; margin-bottom: 5px; color: var(--accent); }
+        .slogan { font-style: italic; font-size: 1.2rem; opacity: 0.8; margin-bottom: 25px; }
+        .controls { display: flex; justify-content: center; gap: 15px; margin: 25px 0; flex-wrap: wrap; }
         
-        .controls { display: flex; justify-content: center; gap: 10px; margin: 20px 0; flex-wrap: wrap; }
-        button { padding: 10px 20px; border: none; border-radius: 5px; cursor: pointer; background: var(--accent); color: white; font-weight: bold; }
+        .btn-nav { padding: 12px 24px; border: none; border-radius: 6px; cursor: pointer; background: var(--accent); color: white; font-weight: bold; font-size: 1rem; text-decoration: none; display: inline-block; transition: 0.2s; }
+        .btn-nav:hover { opacity: 0.9; transform: translateY(-2px); }
         
-        section { margin-bottom: 40px; }
-        h2 { border-bottom: 2px solid var(--accent); padding-bottom: 10px; color: var(--accent); }
+        section { margin-bottom: 60px; }
+        h2 { color: var(--accent); border-bottom: 3px solid var(--accent); padding-bottom: 10px; font-size: 1.8rem; }
+        h3 { margin-top: 25px; color: var(--accent); font-size: 1.4rem; border-left: 4px solid var(--accent); padding-left: 10px; }
+        h4 { margin: 10px 0 5px 0; font-size: 1.1rem; color: var(--accent); }
         
-        .card { background: var(--card-bg); padding: 20px; margin-bottom: 15px; border-radius: 8px; border-left: 5px solid var(--accent); box-shadow: 0 2px 5px rgba(0,0,0,0.1); }
-        code { background: var(--code-bg); padding: 2px 5px; border-radius: 3px; font-family: 'Courier New', monospace; }
-        pre { background: var(--code-bg); padding: 15px; border-radius: 5px; overflow-x: auto; }
+        .card { background: var(--card-bg); padding: 25px; margin-bottom: 20px; border-radius: 8px; box-shadow: 0 4px 10px rgba(0,0,0,0.08); position: relative; }
+        .code-container { position: relative; margin-top: 15px; }
         
-        footer { text-align: center; margin-top: 50px; font-size: 0.9rem; opacity: 0.7; }
+        pre { background: var(--code-bg); padding: 15px; border-radius: 6px; overflow-x: auto; font-family: 'Courier New', monospace; font-size: 0.95rem; margin: 0; line-height: 1.4; color: var(--text); }
+        
+        .btn-copy { position: absolute; top: 8px; right: 8px; background: var(--btn-copy); color: white; border: none; padding: 5px 10px; font-size: 0.8rem; border-radius: 4px; cursor: pointer; font-weight: bold; transition: 0.2s; }
+        .btn-copy:hover { opacity: 0.8; }
+        
+        table { width: 100%; border-collapse: collapse; margin-top: 15px; background: var(--card-bg); }
+        th, td { border: 1px solid var(--border); padding: 12px; text-align: left; }
+        th { background: var(--code-bg); color: var(--text); }
+        
+        .version-list { list-style: none; padding: 0; }
+        .version-list li { padding: 8px 0; border-bottom: 1px dashed var(--border); }
+        
+        footer { text-align: center; margin-top: 60px; padding: 30px; border-top: 1px solid var(--border); font-size: 1rem; opacity: 0.8; }
     </style>
 </head>
 <body>
@@ -49,109 +63,340 @@
         <h1>2&3Dix</h1>
         <p class="slogan">"Se não souber desenhar, programe-o"</p>
         <div class="controls">
-            <button onclick="toggleTheme()">Modo Claro/Escuro</button>
-            <a href="transpilador.html"><button>Começe a criar em v1.1</button></a>
-            <a href="transpilador3d.html"><button>Veja a versão 3d</button></a>
+            <button class="btn-nav" onclick="toggleTheme()">Modo Claro/Escuro</button>
+            <a href="transpilador.html" class="btn-nav">Comece a criar em v1.1</a>
+            <a href="transpilador3d.html" class="btn-nav">Veja a versão 3d</a>
         </div>
     </header>
 
     <section>
-        <h2>Principais palavras-chaves e comandos: Palavras-chave de v1.0</h2>
+        <h2>Principais palavras-chave e comandos:</h2>
+        <h3>2&3Dix: Comandos 2D v1.0</h3>
         
-        <h3>Formas</h3>
-        <p>Objetos 2d para fazer artes ou animações. Sintaxe: <code>forma: >> Suas propriedades aqui...</code></p>
         <div class="card">
-            <p><strong>- circle:</strong> Cria um objeto redondo, útil para fazer olhos de um personagem.</p>
-            <p><strong>- square:</strong> Cria um quadrado na tela.</p>
-            <p><strong>- triangle:</strong> Cria um triangulo.</p>
-            <p><strong>- star:</strong> Cria uma estrela.</p>
-            <p><strong>- line:</strong> Cria uma linha.</p>
-            <p><strong>- text = "Seu texto":</strong> Cria um texto.</p>
+            <h4>Formas</h4>
+            <p>Objetos 2d para fazer artes ou animações.</p>
+            <h5>Exemplo de Sintaxe:</h5>
+            <div class="code-container">
+                <button class="btn-copy" onclick="copyCode(this)">Copiar</button>
+                <pre>forma: 
+  >> Suas propriedades aqui...</pre>
+            </div>
         </div>
 
-        <h3>Propriedades</h3>
         <div class="card">
-            <p><strong>- size:</strong> O tamanho do seu objeto. Funciona para todos exceto linha.</p>
-            <code>size = 50px</code> (padrão) | <code>size = 30px 20px</code> (largura/altura)
-        </div>
-        <div class="card">
-            <p><strong>- position:</strong> Posição do objeto (centro = 0px 0px).</p>
-            <code>position = 15px 20px</code> | <code>position = center</code> | Linhas: <code>position = 15px 30px, 20px 15px</code>
-        </div>
-        <div class="card">
-            <p><strong>- color:</strong> Cor (nome em inglês ou Hexadecimal).</p>
-            <code>color = red</code> | <code>color = #FF0000</code>
-        </div>
-        <div class="card">
-            <p><strong>- thickness:</strong> Espessura da linha (apenas para line).</p>
-            <code>thickness = 15px</code> | <code>thickness = standard</code> (padrão 12px)
-        </div>
-        <div class="card">
-            <p><strong>- zindex:</strong> Define profundidade (frente/atrás).</p>
-            <code>zindex = standard</code> (0) | <code>zindex = 3</code>
-        </div>
-        <div class="card">
-            <p><strong>- >>:</strong> Comentário no código.</p>
-            <code>>> Boo!</code>
+            <h4>- circle</h4>
+            <p>Cria um objeto redondo, útil para fazer olhos de um personagem.</p>
+            <div class="code-container">
+                <button class="btn-copy" onclick="copyCode(this)">Copiar</button>
+                <pre>circle:
+  size = 50px
+  color = black</pre>
+            </div>
         </div>
 
-        <h3>Suporte de Propriedades</h3>
         <div class="card">
-            <ul>
-                <li><strong>Objetos comuns:</strong> size, position, color, zindex</li>
-                <li><strong>Texto:</strong> size, position, color, zindex, thickness</li>
-                <li><strong>Linha:</strong> position, color, zindex, thickness</li>
-            </ul>
+            <h4>- square</h4>
+            <p>Cria um quadrado na tela.</p>
+            <div class="code-container">
+                <button class="btn-copy" onclick="copyCode(this)">Copiar</button>
+                <pre>square:
+  size = 50px
+  color = red</pre>
+            </div>
+        </div>
+
+        <div class="card">
+            <h4>- triangle</h4>
+            <p>Cria um triangulo.</p>
+            <div class="code-container">
+                <button class="btn-copy" onclick="copyCode(this)">Copiar</button>
+                <pre>triangle:
+  size = 50px
+  color = blue</pre>
+            </div>
+        </div>
+
+        <div class="card">
+            <h4>- star</h4>
+            <p>Cria uma estrela.</p>
+            <div class="code-container">
+                <button class="btn-copy" onclick="copyCode(this)">Copiar</button>
+                <pre>star:
+  size = 50px
+  color = yellow</pre>
+            </div>
+        </div>
+
+        <div class="card">
+            <h4>- line</h4>
+            <p>Cria uma linha.</p>
+            <div class="code-container">
+                <button class="btn-copy" onclick="copyCode(this)">Copiar</button>
+                <pre>line:
+  position = 0px 0px, 50px 50px
+  thickness = standard
+  color = green</pre>
+            </div>
+        </div>
+
+        <div class="card">
+            <h4>- text = "Seu texto"</h4>
+            <p>Cria um texto.</p>
+            <div class="code-container">
+                <button class="btn-copy" onclick="copyCode(this)">Copiar</button>
+                <pre>text = "Seu texto":
+  position = center
+  color = black</pre>
+            </div>
+        </div>
+
+        <h3>Propriedades: A definição do seu objeto</h3>
+        
+        <div class="card">
+            <h4>Exemplo de Sintaxe:</h4>
+            <div class="code-container">
+                <button class="btn-copy" onclick="copyCode(this)">Copiar</button>
+                <pre>square:
+  propriedade = tipo</pre>
+            </div>
+        </div>
+
+        <div class="card">
+            <h4>- size</h4>
+            <p>O tamanho do seu objeto. Funciona para todos os objetos menos o line.</p>
+            <p><strong>Exemplo 1:</strong> size = 50px (o padrão)<br>
+               <strong>Exemplo 2:</strong> size = 30px 20px (30px de largura, 20px de altura)<br>
+               <strong>Exemplo 3:</strong> size = standard (o padrão é 50px)</p>
+            <div class="code-container">
+                <button class="btn-copy" onclick="copyCode(this)">Copiar</button>
+                <pre>square:
+  size = 30px 20px</pre>
+            </div>
+        </div>
+
+        <div class="card">
+            <h4>- position</h4>
+            <p>A posição do seu objeto. O centro é 0px 0px.</p>
+            <p><strong>Exemplo 1:</strong> position = 15px 20px (15px para direita, 20px para cima)<br>
+               <strong>Exemplo 2:</strong> position = center (0px 0px)<br>
+               <strong>Para as linhas:</strong> Tem que definir a posição de dois pontos, fazemos assim:</p>
+            <div class="code-container">
+                <button class="btn-copy" onclick="copyCode(this)">Copiar</button>
+                <pre>position = 15px 30px, 20px 15px</pre>
+            </div>
+        </div>
+
+        <div class="card">
+            <h4>- color</h4>
+            <p>A cor do seu objeto. Pode ser com as palavras reservadas (red, blue, etc.) ou com hexadecimal.</p>
+            <p><strong>Exemplo 1:</strong> color = red<br>
+               <strong>Exemplo 2:</strong> color = #FF0000</p>
+            <div class="code-container">
+                <button class="btn-copy" onclick="copyCode(this)">Copiar</button>
+                <pre>circle:
+  color = #FF0000</pre>
+            </div>
+        </div>
+
+        <div class="card">
+            <h4>- thickness</h4>
+            <p>A espessura da linha (só pode ser usado para line).</p>
+            <p><strong>Exemplo 1:</strong> thickness = 15px.<br>
+               <strong>Exemplo 2:</strong> thickness = standard (o padrão é 12px).</p>
+            <div class="code-container">
+                <button class="btn-copy" onclick="copyCode(this)">Copiar</button>
+                <pre>line:
+  thickness = 15px</pre>
+            </div>
+        </div>
+
+        <div class="card">
+            <h4>- zindex</h4>
+            <p>Define se o objeto está na frente ou atrás.</p>
+            <p><strong>Exemplo 1:</strong> zindex = standard (Define o zindex como 0)<br>
+               <strong>Exemplo 2:</strong> zindex = 3</p>
+            <div class="code-container">
+                <button class="btn-copy" onclick="copyCode(this)">Copiar</button>
+                <pre>square:
+  zindex = 3</pre>
+            </div>
+        </div>
+
+        <div class="card">
+            <h4>- &gt;&gt;</h4>
+            <p>Um comentário em 2&3Dix.</p>
+            <div class="code-container">
+                <button class="btn-copy" onclick="copyCode(this)">Copiar</button>
+                <pre>>> Boo!</pre>
+            </div>
+        </div>
+
+        <div class="card">
+            <h4>Quais propriedades cada objeto suporta:</h4>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Objeto</th>
+                        <th>Propriedades Suportadas</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><strong>Objetos comuns</strong></td>
+                        <td>size, position, color, zindex</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Texto</strong></td>
+                        <td>size, position, color, zindex, thickness</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Linha</strong></td>
+                        <td>position, color, zindex, thickness</td>
+                    </tr>
+                </tbody>
+            </table>
         </div>
     </section>
 
     <section>
-        <h2>Novas palavras-chave e comandos: Palavras-chave de v1.1</h2>
-        
+        <h2>Novas palavras-chave e comandos:</h2>
+        <h3>2&3Dix v1.1 2D: Comandos novos e Palavras-chave.</h3>
+
         <div class="card">
-            <h3>varSelector</h3>
-            <p>Banco de dados do 2&3Dix para escrever variáveis.</p>
-            <pre>varSelector:
+            <h4>varSelector</h4>
+            <p>O banco de dados do 2&3dix, usado para escrever variáveis.</p>
+            <div class="code-container">
+                <button class="btn-copy" onclick="copyCode(this)">Copiar</button>
+                <pre>varSelector:
   nome = "Yudhi"
-  altura = 30px</pre>
+  altura = 30px
+
+text = nome:
+  position = 0px altura</pre>
+            </div>
         </div>
 
         <div class="card">
-            <h3>nome = valor</h3>
-            <p>Definição de variável. Valor pode ser texto, número ou pixels.</p>
-            <p>Cálculos permitidos: <code>diametro = raio * 2</code> | <code>pixel = pixel + 1</code></p>
+            <h4>nome = valor</h4>
+            <p>A definição de uma variável. O valor pode ser um texto, um número inteiro ou pixeis (de uma a duas dimensões). Se for um número, permite fazer cálculos. E também pode ser atualizado.</p>
+            <p><strong>Exemplo:</strong> largura = 30px (obrigatoriamente dentro de varSelector)</p>
+            <div class="code-container">
+                <button class="btn-copy" onclick="copyCode(this)">Copiar</button>
+                <pre>diametro = raio * 2
+pixel = pixel + 1</pre>
+            </div>
         </div>
 
         <div class="card">
-            <h3>id</h3>
-            <p>Identidade do objeto.</p>
-            <pre>circle (id = "cabeca"):
+            <h4>id = meu_objeto</h4>
+            <p>A identidade do objeto.</p>
+            <div class="code-container">
+                <button class="btn-copy" onclick="copyCode(this)">Copiar</button>
+                <pre>circle (id = "cabeca"):
   color = #FFC080</pre>
+            </div>
         </div>
 
         <div class="card">
-            <h3>class</h3>
-            <p>Agrupamento de objetos.</p>
-            <pre>circle (class = "objetos"):
+            <h4>class = meus_objetos</h4>
+            <p>A classe dos objetos.</p>
+            <p><strong>Exemplo 1:</strong></p>
+            <div class="code-container">
+                <button class="btn-copy" onclick="copyCode(this)">Copiar</button>
+                <pre>circle (class = "objetos"):
+  color = red
+
+square (class = "objetos")
   color = red</pre>
+            </div>
+            <p><strong>Exemplo 2:</strong></p>
+            <div class="code-container">
+                <button class="btn-copy" onclick="copyCode(this)">Copiar</button>
+                <pre>circle (class = "objetos")
+square (class = "objetos")
+
+objetos:
+  color = red</pre>
+            </div>
         </div>
 
         <div class="card">
-            <h3>n-gons</h3>
-            <p>Polígono personalizado (substitua n pelo número de lados).</p>
-            <pre>10-gon:
-  color = red >> Um decágono.</pre>
+            <h4>n-gons</h4>
+            <p>Um polígono personalizado, pode substituir n por qualquer número.</p>
+            <div class="code-container">
+                <button class="btn-copy" onclick="copyCode(this)">Copiar</button>
+                <pre>10-gon:
+  color = red
+  >> Um decágono.</pre>
+            </div>
         </div>
 
         <div class="card">
-            <h3>print -></h3>
-            <p>Manda mensagem ao console (não desenha).</p>
-            <pre>print -> "Estou no console, e concluí a v1.1!"</pre>
+            <h4>print -&gt; "texto"</h4>
+            <p>Quando você quer mandar a mensagem no console, não no desenho.</p>
+            <div class="code-container">
+                <button class="btn-copy" onclick="copyCode(this)">Copiar</button>
+                <pre>square:
+  color = red
+
+print -> "Estou no console, e concluí a v1.1 de 2&3dix!"</pre>
+            </div>
         </div>
+
+        <div class="card">
+            <h4>Lazy definition</h4>
+            <p><strong>Explicação Detalhada:</strong> Ocorre quando você declara e define a existência dos objetos pertencentes a uma determinada classe primeiro no arquivo, deixando para especificar as propriedades e estilizações dessa classe apenas em um bloco posterior do código.</p>
+            <div class="code-container">
+                <button class="btn-copy" onclick="copyCode(this)">Copiar</button>
+                <pre>square (class = "blue")
+circle (class = "blue")
+
+blue:
+  color = blue</pre>
+            </div>
+        </div>
+
+        <div class="card">
+            <h4>Herança</h4>
+            <p><strong>Explicação Detalhada:</strong> Ocorre quando você inverte a ordem sequencial de leitura: você cria e define completamente as propriedades da classe no topo do escopo, antes mesmo de instanciar ou declarar os objetos que farão uso dessa classe.</p>
+            <div class="code-container">
+                <button class="btn-copy" onclick="copyCode(this)">Copiar</button>
+                <pre>blue:
+  color = blue
+
+square (class = "blue")
+circle (class = "blue")</pre>
+            </div>
+        </div>
+
+        <div class="card">
+            <h4>Filho Independente</h4>
+            <p><strong>Explicação Detalhada:</strong> Acontece quando um objeto específico vinculado a uma classe herda e carrega automaticamente todas as propriedades globais daquela classe, mas possui a flexibilidade única de mesclar, estender ou sobrescrever esses valores com as suas próprias propriedades locais individuais.</p>
+            <div class="code-container">
+                <button class="btn-copy" onclick="copyCode(this)">Copiar</button>
+                <pre>blue:
+  color = blue
+
+square (class = "blue"):
+  zindex = 2
+circle (class = "blue")</pre>
+            </div>
+        </div>
+
+        <div class="card">
+            <h4>Histórico de Versões do Ecossistema</h4>
+            <ul class="version-list">
+                <li><strong>v1.0.0</strong> - A fundação da linguagem (04/06)</li>
+                <li><strong>v1.0.1</strong> - A versão 3D (05/06)</li>
+                <li><strong>v1.1.0</strong> - Adição de memória, print, ids e classes (07/06)</li>
+            </ul>
+        </div>
+
     </section>
 
     <footer>
-        <p>&copy; 2026 2&3Dix Yudhi Gerson. Todos os direitos reservados.</p>
+        <p>&copy; 2026 2&3Dix - Yudhi Gerson. Todos os direitos reservados.</p>
     </footer>
 </div>
 
@@ -159,6 +404,24 @@
     function toggleTheme() {
         const body = document.body;
         body.dataset.theme = (body.dataset.theme === 'dark') ? 'light' : 'dark';
+    }
+
+    function copyCode(button) {
+        const pre = button.nextElementSibling;
+        const text = pre.innerText;
+        
+        navigator.clipboard.writeText(text).then(() => {
+            const originalText = button.innerText;
+            button.innerText = 'Copiado!';
+            button.style.background = '#2ecc71';
+            
+            setTimeout(() => {
+                button.innerText = originalText;
+                button.style.background = '';
+            }, 2000);
+        }).catch(err => {
+            console.error('Erro ao copiar código: ', err);
+        });
     }
 </script>
 
